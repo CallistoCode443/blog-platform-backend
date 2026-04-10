@@ -18,7 +18,7 @@ public class CreateUserRequest {
     private String email;
 
     @NotBlank(message = "Username is required")
-    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username can only contain letters фтв numbers")
+    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username can only contain letters and numbers")
     private String username;
 
     @NotBlank(message = "Password is required")
