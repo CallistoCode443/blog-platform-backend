@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.blogplatform.domain.dto.CreateUserRequest;
 import com.example.blogplatform.domain.entity.User;
+import com.example.blogplatform.exception.UserAlreadyExistsException;
 import com.example.blogplatform.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,12 @@ public class UserService {
     @Transactional
     public User create(CreateUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException(
+            throw new UserAlreadyExistsException(
                     String.format("User with email '%s' already exists", request.getEmail()));
         }
 
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException(
+            throw new UserAlreadyExistsException(
                     String.format("User with username '%s' already exists", request.getUsername()));
         }
 
