@@ -16,3 +16,9 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+
+app:
+  jwt:
+    access-token-duration: 15m
+    refresh-token-duration: 7d
+    secret: custodian-shortness-degrease-carnivore7-transpose-pedometer

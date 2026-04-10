@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "app.jwt.access-token-duration",
+      "type": "java.time.Duration",
+      "description": "Duration of access token"
+    },
+    {
+      "name": "app.jwt.refresh-token-duration",
+      "type": "java.time.Duration",
+      "description": "Duration of refresh token"
+    },
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Secret phrase for signing JWT token"
+    }
+  ]
+}
