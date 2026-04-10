@@ -4,5 +4,5 @@ CREATE TABLE
         token VARCHAR(255) NOT NULL UNIQUE,
         owner_id UUID NOT NULL,
         created_at TIMESTAMP NOT NULL DEFAULT NOW (),
-        expired_at TIMESTAMP NOT NULL
+        expires_at TIMESTAMP NOT NULL
     );
