@@ -22,3 +22,9 @@ app:
     access-token-duration: 15m
     refresh-token-duration: 7d
     secret: custodian-shortness-degrease-carnivore7-transpose-pedometer
+  cookie:
+    access-token-name: access_token
+    refresh-token-name: refresh_token
+    path: /
+    refresh-path: /api/v1/auth/refresh
+    max-age: 7d

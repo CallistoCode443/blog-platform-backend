@@ -14,6 +14,31 @@
       "name": "app.jwt.secret",
       "type": "java.lang.String",
       "description": "Secret phrase for signing JWT token"
+    },
+    {
+      "name": "app.cookie.access-token-name",
+      "type": "java.lang.String",
+      "description": "Cookie name for access token"
+    },
+    {
+      "name": "app.cookie.refresh-token-name",
+      "type": "java.lang.String",
+      "description": "Cookie name for refresh token"
+    },
+    {
+      "name": "app.cookie.path",
+      "type": "java.lang.String",
+      "description": "Cookie path"
+    },
+    {
+      "name": "app.cookie.refresh-path",
+      "type": "java.lang.String",
+      "description": "Cookie path for refresh token"
+    },
+    {
+      "name": "app.cookie.max-age",
+      "type": "java.time.Duration",
+      "description": "Cookie max age"
     }
   ]
 }
