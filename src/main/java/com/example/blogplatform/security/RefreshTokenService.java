@@ -59,6 +59,10 @@ public class RefreshTokenService {
         refreshTokenRepository.delete(refreshToken);
     }
 
+    public void deleteIfExists(String refreshToken) {
+        refreshTokenRepository.findByToken(refreshToken).ifPresent(refreshTokenRepository::delete);
+    }
+
     private String generateRawToken() {
         byte[] bytes = new byte[32];
         String token;

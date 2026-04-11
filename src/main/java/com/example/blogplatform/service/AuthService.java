@@ -44,8 +44,9 @@ public class AuthService {
 
     @Transactional
     public void logout(String refreshToken) {
-        RefreshToken token = refreshTokenService.validateAndGetRefreshToken(refreshToken);
-        refreshTokenService.delete(token);
+        if (refreshToken != null) {
+            refreshTokenService.deleteIfExists(refreshToken);
+        }
     }
 
     @Transactional
