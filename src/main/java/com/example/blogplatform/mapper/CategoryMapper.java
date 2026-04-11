@@ -10,5 +10,6 @@ import com.example.blogplatform.domain.entity.Category;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CategoryMapper {
+    CategoryResponse toResponse(Category category);
     List<CategoryResponse> toResponseList(List<Category> categories);
 }
