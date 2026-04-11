@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.blogplatform.domain.dto.CreatePostRequest;
 import com.example.blogplatform.domain.dto.PostResponse;
 import com.example.blogplatform.domain.dto.PostSummaryResponse;
+import com.example.blogplatform.domain.dto.UpdatePostRequest;
 import com.example.blogplatform.security.CustomUserDetails;
 import com.example.blogplatform.service.PostService;
 
@@ -58,6 +60,12 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable UUID id) {
         postService.deletePost(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updatePost(@PathVariable UUID id, @RequestBody UpdatePostRequest request) {
+        postService.updatePost(id, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
