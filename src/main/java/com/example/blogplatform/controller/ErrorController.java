@@ -14,6 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import com.example.blogplatform.domain.dto.ApiErrorResponse;
 import com.example.blogplatform.exception.CategoryAlreadyExistsException;
 import com.example.blogplatform.exception.CategoryNotFoundException;
+import com.example.blogplatform.exception.PostNotFoundException;
 import com.example.blogplatform.exception.RefreshTokenException;
 import com.example.blogplatform.exception.TagNotFoundException;
 import com.example.blogplatform.exception.UserAlreadyExistsException;
@@ -132,5 +133,15 @@ public class ErrorController {
                 .message(String.format("Invalid value '%s' for parameter '%s'", ex.getValue(), ex.getName()))
                 .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handlePostNotFoundException(PostNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }
