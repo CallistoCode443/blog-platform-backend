@@ -48,4 +48,9 @@ public class CategoryService {
 
         categoryRepository.delete(category);
     }
+
+    public Category getCategoryById(UUID id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(String.format("Category with id %s not found", id)));
+    }
 }
