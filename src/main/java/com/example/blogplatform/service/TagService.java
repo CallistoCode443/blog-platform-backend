@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.blogplatform.domain.dto.CreateTagRequest;
 import com.example.blogplatform.domain.dto.TagResponse;
 import com.example.blogplatform.domain.entity.Tag;
+import com.example.blogplatform.exception.TagAlreadyExistsException;
 import com.example.blogplatform.exception.TagNotFoundException;
 import com.example.blogplatform.mapper.TagMapper;
 import com.example.blogplatform.repository.TagRepository;
@@ -30,13 +31,13 @@ public class TagService {
     }
 
     @Transactional
-    public List<TagResponse> findOrCreateTags(CreateTagRequest request) {
-        List<Tag> existingTags = tagRepository.findByNameIn(request.getNames());
+    public List<Tag> findOrCreateTags(Set<String> tagNames) {
+        List<Tag> existingTags = tagRepository.findByNameIn(tagNames);
         Set<String> existingTagNames = existingTags.stream()
                 .map(Tag::getName)
                 .collect(Collectors.toSet());
 
-        List<Tag> newTags = request.getNames().stream()
+        List<Tag> newTags = tagNames.stream()
                 .filter(name -> !existingTagNames.contains(name))
                 .map(name -> Tag.builder()
                         .name(name)
@@ -48,9 +49,21 @@ public class TagService {
             result.addAll(tagRepository.saveAll(newTags));
         }
 
-        return tagMapper.toResponseList(result);
+        return result;
     }
 
+    @Transactional
+    public void createTag(CreateTagRequest request) {
+        if (tagRepository.existsByName(request.getName())) {
+            throw new TagAlreadyExistsException(
+                    String.format("Tag with name %s already exists", request.getName()));
+        }
+
+        Tag newTag = Tag.builder().name(request.getName()).build();
+        tagRepository.save(newTag);
+    }
+
+    @Transactional
     public void deleteTag(UUID id) {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new TagNotFoundException(String.format("Tag with id %s not found", id)));

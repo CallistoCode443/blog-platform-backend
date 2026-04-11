@@ -33,8 +33,8 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createTags(@Valid @RequestBody CreateTagRequest request) {
-        tagService.findOrCreateTags(request);
+    public ResponseEntity<Void> createTag(@Valid @RequestBody CreateTagRequest request) {
+        tagService.createTag(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
