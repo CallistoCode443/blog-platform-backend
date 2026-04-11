@@ -9,5 +9,5 @@ import com.example.blogplatform.domain.entity.Category;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
-
+    boolean existsByNameIgnoreCase(String name);
 }
