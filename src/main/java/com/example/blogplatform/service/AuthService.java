@@ -1,6 +1,5 @@
 package com.example.blogplatform.service;
 
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,7 +11,6 @@ import com.example.blogplatform.domain.dto.LoginRequest;
 import com.example.blogplatform.domain.dto.TokenBundle;
 import com.example.blogplatform.domain.entity.RefreshToken;
 import com.example.blogplatform.domain.entity.User;
-import com.example.blogplatform.security.CookieManager;
 import com.example.blogplatform.security.CustomUserDetails;
 import com.example.blogplatform.security.JwtService;
 import com.example.blogplatform.security.RefreshTokenService;
@@ -25,7 +23,6 @@ public class AuthService {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
     private final JwtService jwtService;
-    private final CookieManager cookieManager;
     private final AuthenticationManager authenticationManager;
 
     public TokenBundle login(LoginRequest request) {
@@ -46,6 +43,12 @@ public class AuthService {
     }
 
     @Transactional
+    public void logout(String refreshToken) {
+        RefreshToken token = refreshTokenService.validateAndGetRefreshToken(refreshToken);
+        refreshTokenService.delete(token);
+    }
+
+    @Transactional
     public TokenBundle refreshTokens(String refreshTokenFromCookie) {
         RefreshToken refreshToken = refreshTokenService.validateAndGetRefreshToken(refreshTokenFromCookie);
         refreshTokenService.delete(refreshToken);
@@ -57,12 +60,9 @@ public class AuthService {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = refreshTokenService.generateRefreshToken(user);
 
-        ResponseCookie accessTokenCookie = cookieManager.createAccessTokenCookie(accessToken);
-        ResponseCookie refreshTokenCookie = cookieManager.createRefreshTokenCookie(refreshToken);
-
         return TokenBundle.builder()
-                .refreshTokenCookie(refreshTokenCookie)
-                .accessTokenCookie(accessTokenCookie)
+                .refreshToken(refreshToken)
+                .accessToken(accessToken)
                 .build();
     }
 }
