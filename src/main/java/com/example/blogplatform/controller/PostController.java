@@ -68,4 +68,17 @@ public class PostController {
         postService.updatePost(id, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PostMapping("/{id}/publish")
+    public ResponseEntity<Void> publishPost(@PathVariable UUID id) {
+        postService.publishPost(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+    }
+
+    @PostMapping("/{id}/unpublish")
+    public ResponseEntity<Void> unpublishPost(@PathVariable UUID id) {
+        postService.unpublishPost(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

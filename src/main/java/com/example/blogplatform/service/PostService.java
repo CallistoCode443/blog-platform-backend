@@ -93,4 +93,22 @@ public class PostService {
 
         postRepository.save(post);
     }
+
+    @Transactional
+    public void publishPost(UUID id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException(String.format("Post with id %s not found", id)));
+
+        post.setStatus(PostStatus.PUBLISHED);
+        postRepository.save(post);
+    }
+
+    @Transactional
+    public void unpublishPost(UUID id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException(String.format("Post with id %s not found", id)));
+
+        post.setStatus(PostStatus.DRAFT);
+        postRepository.save(post);
+    }
 }
