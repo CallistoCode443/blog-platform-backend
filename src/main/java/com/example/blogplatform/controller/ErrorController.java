@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.blogplatform.domain.dto.ApiErrorResponse;
+import com.example.blogplatform.exception.RefreshTokenException;
 import com.example.blogplatform.exception.UserAlreadyExistsException;
 import com.example.blogplatform.exception.UserNotFoundException;
 
@@ -64,10 +65,21 @@ public class ErrorController {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ApiErrorResponse> handleHttpRequestMethodNotSupportedException(
             HttpRequestMethodNotSupportedException ex) {
-        ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.METHOD_NOT_ALLOWED.value())
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.METHOD_NOT_ALLOWED.value())
                 .message(String.format("Method not supported: %s", ex.getMessage()))
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(RefreshTokenException.class)
+    public ResponseEntity<ApiErrorResponse> handleRefreshTokenException(RefreshTokenException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 }

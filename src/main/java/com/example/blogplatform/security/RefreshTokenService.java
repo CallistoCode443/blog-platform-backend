@@ -11,9 +11,8 @@ import org.springframework.stereotype.Service;
 import com.example.blogplatform.domain.entity.RefreshToken;
 import com.example.blogplatform.domain.entity.User;
 import com.example.blogplatform.exception.RefreshTokenExpiredException;
+import com.example.blogplatform.exception.RefreshTokenNotFoundException;
 import com.example.blogplatform.repository.RefreshTokenRepository;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class RefreshTokenService {
@@ -46,7 +45,7 @@ public class RefreshTokenService {
 
     public RefreshToken validateAndGetRefreshToken(String rawRefreshToken) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(rawRefreshToken)
-                .orElseThrow(() -> new EntityNotFoundException("Refresh Token not found"));
+                .orElseThrow(() -> new RefreshTokenNotFoundException("Refresh Token not found"));
 
         if (refreshToken.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new RefreshTokenExpiredException("Refresh Token expired");
