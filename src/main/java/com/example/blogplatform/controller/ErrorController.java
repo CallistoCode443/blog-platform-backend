@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.blogplatform.domain.dto.ApiErrorResponse;
 import com.example.blogplatform.exception.UserAlreadyExistsException;
+import com.example.blogplatform.exception.UserNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,5 +49,14 @@ public class ErrorController {
                 .message(errors.toString())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }
