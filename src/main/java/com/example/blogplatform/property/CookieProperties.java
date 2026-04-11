@@ -19,5 +19,6 @@ public class CookieProperties {
     private String refreshTokenName;
     private String path;
     private String refreshPath;
-    private Duration maxAge;
+    private Duration accessTokenMaxAge;
+    private Duration refreshTokenMaxAge;
 }

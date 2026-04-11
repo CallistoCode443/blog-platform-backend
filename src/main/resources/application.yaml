@@ -25,6 +25,7 @@ app:
   cookie:
     access-token-name: access_token
     refresh-token-name: refresh_token
+    access-token-max-age: 15m
+    refresh-token-max-age: 7d
     path: /
     refresh-path: /api/v1/auth/refresh
-    max-age: 7d

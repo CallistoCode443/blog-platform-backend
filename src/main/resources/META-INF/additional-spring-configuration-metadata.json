@@ -36,9 +36,14 @@
       "description": "Cookie path for refresh token"
     },
     {
-      "name": "app.cookie.max-age",
+      "name": "app.cookie.access-token-max-age",
       "type": "java.time.Duration",
-      "description": "Cookie max age"
+      "description": "Cookie max age for access token"
+    },
+    {
+      "name": "app.cookie.refresh-token-max-age",
+      "type": "java.time.Duration",
+      "description": "Cookie max age for refresh token"
     }
   ]
 }

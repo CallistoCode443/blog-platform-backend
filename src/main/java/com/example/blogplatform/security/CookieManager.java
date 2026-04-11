@@ -1,5 +1,7 @@
 package com.example.blogplatform.security;
 
+import java.time.Duration;
+
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
@@ -16,7 +18,8 @@ public class CookieManager {
     private final CookieProperties cookieProperties;
 
     public ResponseCookie createAccessTokenCookie(String token) {
-        return createCookie(cookieProperties.getAccessTokenName(), token, cookieProperties.getPath());
+        return createCookie(cookieProperties.getAccessTokenName(), token, cookieProperties.getPath(),
+                cookieProperties.getAccessTokenMaxAge());
     }
 
     public ResponseCookie clearAccessTokenCookie() {
@@ -28,7 +31,8 @@ public class CookieManager {
     }
 
     public ResponseCookie createRefreshTokenCookie(String token) {
-        return createCookie(cookieProperties.getRefreshTokenName(), token, cookieProperties.getPath());
+        return createCookie(cookieProperties.getRefreshTokenName(), token, cookieProperties.getPath(),
+                cookieProperties.getRefreshTokenMaxAge());
     }
 
     public ResponseCookie clearRefreshTokenCookie() {
@@ -39,12 +43,12 @@ public class CookieManager {
         return getCookieValue(request, cookieProperties.getRefreshTokenName());
     }
 
-    private ResponseCookie createCookie(String name, String value, String path) {
+    private ResponseCookie createCookie(String name, String value, String path, Duration maxAge) {
         return ResponseCookie.from(name, value)
                 .path(path)
                 .httpOnly(true)
                 .sameSite("strict")
-                .maxAge(cookieProperties.getMaxAge())
+                .maxAge(maxAge)
                 .build();
     }
 
