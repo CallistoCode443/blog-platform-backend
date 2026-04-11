@@ -1,5 +1,7 @@
 package com.example.blogplatform.service;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.blogplatform.domain.dto.CreateUserRequest;
 import com.example.blogplatform.domain.entity.User;
 import com.example.blogplatform.exception.UserAlreadyExistsException;
+import com.example.blogplatform.exception.UserNotFoundException;
 import com.example.blogplatform.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -36,5 +39,10 @@ public class UserService {
                 .build();
 
         return userRepository.save(newUser);
+    }
+
+    public User getUserById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with id '%s' not found", id, null)));
     }
 }
