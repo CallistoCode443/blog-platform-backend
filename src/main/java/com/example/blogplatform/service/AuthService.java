@@ -1,14 +1,19 @@
 package com.example.blogplatform.service;
 
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.blogplatform.domain.dto.CreateUserRequest;
+import com.example.blogplatform.domain.dto.LoginRequest;
 import com.example.blogplatform.domain.dto.TokenBundle;
 import com.example.blogplatform.domain.entity.RefreshToken;
 import com.example.blogplatform.domain.entity.User;
 import com.example.blogplatform.security.CookieManager;
+import com.example.blogplatform.security.CustomUserDetails;
 import com.example.blogplatform.security.JwtService;
 import com.example.blogplatform.security.RefreshTokenService;
 
@@ -21,9 +26,23 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final JwtService jwtService;
     private final CookieManager cookieManager;
+    private final AuthenticationManager authenticationManager;
 
-    public void register(CreateUserRequest request) {
+    public TokenBundle login(LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPassword()));
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        return createTokenBundle(userDetails.getUser());
+    }
+
+    @Transactional
+    public TokenBundle register(CreateUserRequest request) {
         User newUser = userService.create(request);
+
+        return createTokenBundle(newUser);
     }
 
     @Transactional
@@ -31,11 +50,15 @@ public class AuthService {
         RefreshToken refreshToken = refreshTokenService.validateAndGetRefreshToken(refreshTokenFromCookie);
         refreshTokenService.delete(refreshToken);
 
-        String newRefreshToken = refreshTokenService.generateRefreshToken(refreshToken.getOwner());
-        String newAccessToken = jwtService.generateAccessToken(refreshToken.getOwner());
+        return createTokenBundle(refreshToken.getOwner());
+    }
 
-        ResponseCookie refreshTokenCookie = cookieManager.createRefreshTokenCookie(newRefreshToken);
-        ResponseCookie accessTokenCookie = cookieManager.createAccessTokenCookie(newAccessToken);
+    private TokenBundle createTokenBundle(User user) {
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = refreshTokenService.generateRefreshToken(user);
+
+        ResponseCookie accessTokenCookie = cookieManager.createAccessTokenCookie(accessToken);
+        ResponseCookie refreshTokenCookie = cookieManager.createRefreshTokenCookie(refreshToken);
 
         return TokenBundle.builder()
                 .refreshTokenCookie(refreshTokenCookie)
