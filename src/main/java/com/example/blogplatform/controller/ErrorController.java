@@ -14,6 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import com.example.blogplatform.domain.dto.ApiErrorResponse;
 import com.example.blogplatform.exception.CategoryAlreadyExistsException;
 import com.example.blogplatform.exception.CategoryNotFoundException;
+import com.example.blogplatform.exception.InvalidPasswordException;
 import com.example.blogplatform.exception.PostNotFoundException;
 import com.example.blogplatform.exception.RefreshTokenException;
 import com.example.blogplatform.exception.TagNotFoundException;
@@ -143,5 +144,15 @@ public class ErrorController {
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidPasswordException(InvalidPasswordException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
