@@ -1,11 +1,14 @@
 package com.example.blogplatform.service;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.example.blogplatform.repository.specification.PostSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +35,14 @@ public class PostService {
     private final CategoryService categoryService;
     private final TagService tagService;
 
-    public Page<PostSummaryResponse> getPostSummaries(Pageable pageable) {
-        return postRepository.findAll(pageable).map(postMapper::toSummaryResponse);
+    public Page<PostSummaryResponse> getPosts(UUID categoryId, UUID authorId, UUID tagId, String q, Pageable pageable) {
+        Specification<Post> spec = Specification.where(PostSpecification.hasStatus(PostStatus.PUBLISHED))
+                .and(PostSpecification.hasTag(tagId))
+                .and(PostSpecification.hasCategory(categoryId))
+                .and(PostSpecification.hasAuthor(authorId))
+                .and(PostSpecification.titleContains(q));
+
+        return postRepository.findAll(spec, pageable).map(postMapper::toSummaryResponse);
     }
 
     public PostResponse getPost(UUID id) {
@@ -45,7 +54,7 @@ public class PostService {
     @Transactional
     public PostResponse createPost(CreatePostRequest request, User user) {
         Category category = categoryService.getCategoryById(request.getCategoryId());
-        Set<Tag> tags = tagService.findOrCreateTags(request.getTags()).stream().collect(Collectors.toSet());
+        Set<Tag> tags = new HashSet<>(tagService.findOrCreateTags(request.getTags()));
 
         Post newPost = Post.builder()
                 .title(request.getTitle())
