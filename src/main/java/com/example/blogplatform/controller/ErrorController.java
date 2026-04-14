@@ -2,6 +2,7 @@ package com.example.blogplatform.controller;
 
 import java.util.List;
 
+import com.example.blogplatform.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -12,14 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.example.blogplatform.domain.dto.ApiErrorResponse;
-import com.example.blogplatform.exception.CategoryAlreadyExistsException;
-import com.example.blogplatform.exception.CategoryNotFoundException;
-import com.example.blogplatform.exception.InvalidPasswordException;
-import com.example.blogplatform.exception.PostNotFoundException;
-import com.example.blogplatform.exception.RefreshTokenException;
-import com.example.blogplatform.exception.TagNotFoundException;
-import com.example.blogplatform.exception.UserAlreadyExistsException;
-import com.example.blogplatform.exception.UserNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -154,5 +147,15 @@ public class ErrorController {
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TagAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handleTagAlreadyExistsException(TagAlreadyExistsException ex) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }
